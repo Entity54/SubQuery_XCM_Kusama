@@ -1,0 +1,41 @@
+specVersion: 1.0.0
+name: subquery-starter
+version: 0.0.4
+runner:
+  node:
+    name: '@subql/node'
+    version: '>=1.0.0'
+  query:
+    name: '@subql/query'
+    version: '*'
+description: XCM Indexer for Kusama
+repository: 'https://github.com/subquery/subql-starter'
+schema:
+  file: ./schema.graphql
+network:
+  chainId: '0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe'
+  endpoint: 'wss://kusama.api.onfinality.io/public-ws'
+  dictionary: 'https://api.subquery.network/sq/subquery/kusama-dictionary'
+dataSources:
+  - kind: substrate/Runtime
+    startBlock: 12758200
+    mapping:
+      file: ./dist/index.js
+      handlers:
+        # - handler: handleBlock
+        #   kind: substrate/BlockHandler
+        - handler: handleUMPExecutedUpwardEvent
+          kind: substrate/EventHandler
+          filter:
+            module: ump
+            method: ExecutedUpward
+        - handler: handleParaInclusionCandidateBackedEvent
+          kind: substrate/EventHandler
+          filter:
+            module: paraInclusion
+            method: CandidateBacked
+        - handler: handleXCMPalletTransferCall
+          kind: substrate/CallHandler
+          filter:
+            module: xcmPallet
+            method: limitedReserveTransferAssets

@@ -1,0 +1,113 @@
+type Query {
+  XCMPalletTransfers(filter: XCMPalletTransferFilterInput) : [XCMPalletTransfer]!
+  Accounts(filter: AccountsFilterInput) : [Account]!
+  ExternalAccountId32s(filter: ExternalAccountId32FilterInput) : [ExternalAccountId32]!
+  ExternalAccountId20s(filter: ExternalAccountId20FilterInput) : [ExternalAccountId20]!
+  UmpExecutedUpwardEvents(filter: UmpExecutedUpwardEventsFilterInput) : [UmpExecutedUpwardEvent]!
+}
+
+input XCMPalletTransferFilterInput {
+  id: StringQueryOperatorInput
+  blockNum: StringQueryOperatorInput
+  fromAccountId: StringQueryOperatorInput
+  toAddressId32Id: StringQueryOperatorInput
+  toAddressId20Id: StringQueryOperatorInput
+  destinatioParachainId: StringQueryOperatorInput
+}
+
+input AccountsFilterInput {
+  id: StringQueryOperatorInput
+}
+input ExternalAccountId32FilterInput {
+  id: StringQueryOperatorInput
+}
+input ExternalAccountId20FilterInput {
+  id: StringQueryOperatorInput
+}
+
+
+
+input UmpExecutedUpwardEventsFilterInput {
+  parachainId: StringQueryOperatorInput
+  toAddressId32Id: StringQueryOperatorInput
+}
+
+
+
+input StringQueryOperatorInput {
+  eq: String
+  ne: String
+  in: [String]
+  nin: [String]
+  regex: String
+  glob: String
+}
+
+ 
+type XCMPalletTransfer @entity {
+  id: ID! #id is a required field   Extrinsic Hash
+  extrinsic_idx: Int
+  blockNum: BigInt
+  blockHash: String
+  timestamp: Date
+  signer: String
+  signature: String
+  transferedToken : String
+  fromAccount: Account!  
+  transferedAmount: String
+  amount: String
+  destinatioParachainId : Int
+  sentFees: String
+  toAddressId20: ExternalAccountId20    
+  toAddressId32: ExternalAccountId32     
+  treasuryFees: String
+  treasuryAddress: String
+  validatorFees: String
+  validatorAddress: String
+}
+
+
+type Account @entity {
+  id: ID! #this primary key is set as the toAddress
+}
+
+type ExternalAccountId32 @entity {
+  id: ID! #this primary key is set as the toAddress
+}
+type ExternalAccountId20 @entity {
+  id: ID! #this primary key is set as the toAddress
+}
+
+type UmpExecutedUpwardEvent @entity {
+    id: ID! #id is a required field
+    blockNum: BigInt
+    blockHash: String
+    timestamp: Date
+    token: String
+    upwardMessagHash: String
+    parachainId: String
+
+    upwardMessage: String
+    extrinsicHash: String
+    toAddressId32Id: Account  
+    amount: String
+}
+
+
+
+type ParaInclusionCandidateBackedEvent @entity {
+    id: ID! #id is a required field
+    blockNum: BigInt
+    blockHash: String
+    timestamp: Date
+    token: String
+    extrinsicHash: String
+
+    upwardMessageLength: Int
+    upwardMessage: String
+    upwardMessagHash: String
+
+    evstring: String
+    paraId: String
+    extrinsicData: String
+}
